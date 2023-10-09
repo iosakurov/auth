@@ -7,7 +7,7 @@ import (
 	"net"
 
 	"github.com/brianvoe/gofakeit"
-	desc "github.com/iosakurov/auth/grpc/pkg/auth_v1"
+	desc "github.com/iosakurov/auth/pkg/auth_v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -23,20 +23,15 @@ type server struct {
 func (s *server) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
 	log.Printf("Get id: %d\n", req.GetId())
 
-	password := gofakeit.Password(true, false, false, false, false, 10)
-	role := desc.Role_ROLE_ADMIN
+	role := desc.Role_ADMIN
 
 	return &desc.GetResponse{
-		Info: &desc.UserInfo{
-			Id:              req.GetId(),
-			Name:            gofakeit.Name(),
-			Email:           gofakeit.Email(),
-			Password:        password,
-			PasswordConfirm: password,
-			Role:            role,
-			CreatedAt:       timestamppb.New(gofakeit.Date()),
-			UpdatedAt:       timestamppb.New(gofakeit.Date()),
-		},
+		Id:        req.GetId(),
+		Name:      gofakeit.Name(),
+		Email:     gofakeit.Email(),
+		Role:      role,
+		CreatedAt: timestamppb.New(gofakeit.Date()),
+		UpdatedAt: timestamppb.New(gofakeit.Date()),
 	}, nil
 
 }

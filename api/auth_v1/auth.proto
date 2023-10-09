@@ -6,7 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/iosakurov/auth/grpc/pkg/auth_v1;auth_v1";
+option go_package = "github.com/iosakurov/auth/pkg/auth_v1;auth_v1";
 
 service UserAPI {
   rpc Create(CreateRequest) returns (CreateResponse);
@@ -32,13 +32,19 @@ message GetRequest {
 }
 
 message GetResponse {
-  UserInfo info = 1;
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+  Role role = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
 }
 
 message UpdateRequest {
   int64 id = 1;
   google.protobuf.StringValue name = 2;
   google.protobuf.StringValue email = 3;
+  Role role = 4;
 }
 
 message DeleteRequest {
@@ -46,9 +52,9 @@ message DeleteRequest {
 }
 
 enum  Role {
-  ROLE_UNKNOWN = 0;
-  ROLE_ADMIN = 1;
-  ROLE_USER = 2;
+  UNKNOWN = 0;
+  ADMIN = 1;
+  USER = 2;
 }
 
 message UserInfo {
