@@ -10,7 +10,7 @@ import (
 	"log"
 	"time"
 
-	desc "github.com/iosakurov/auth/grpc/pkg/auth_v1"
+	desc "github.com/iosakurov/auth/pkg/auth_v1"
 )
 
 const (
@@ -23,21 +23,26 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect to server: %v", err)
 	}
-	defer conn.Close()
+	defer func(conn *grpc.ClientConn) {
+		e := conn.Close()
+		if e != nil {
+			log.Fatal("Произошла ошибка")
+		}
+	}(conn)
 
 	client := desc.NewUserAPIClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	log.Printf(color.RedString("User Get\n"))
+	log.Print(color.RedString("User Get\n"))
 	response, err := client.Get(ctx, &desc.GetRequest{Id: userID})
 	if err != nil {
 		log.Fatalf("failed to get user by id: %v", err)
 	}
 	log.Printf(color.RedString("User Info:\n"), color.GreenString("%+v", response.GetInfo()))
 
-	log.Printf(color.RedString("User Update\n"))
+	log.Print(color.RedString("User Update\n"))
 	updateResponse, updateErr := client.Update(ctx, &desc.UpdateRequest{
 		Id:   userID,
 		Name: wrapperspb.String(gofakeit.Name()),
@@ -47,7 +52,7 @@ func main() {
 	}
 	log.Printf(color.RedString("User Info:\n"), color.GreenString("%+v", updateResponse))
 
-	log.Printf(color.RedString("User Create\n"))
+	log.Print(color.RedString("User Create\n"))
 	password := gofakeit.Password(true, false, false, false, false, 10)
 	role := desc.Role_ROLE_USER
 	createResponse, createErr := client.Create(ctx, &desc.CreateRequest{
@@ -62,7 +67,7 @@ func main() {
 	}
 	log.Printf(color.RedString("User Info:\n"), color.GreenString("%+v", createResponse))
 
-	log.Printf(color.RedString("User Delete\n"))
+	log.Print(color.RedString("User Delete\n"))
 	deleteResponse, deleteErr := client.Delete(ctx, &desc.DeleteRequest{Id: 666})
 	if deleteErr != nil {
 		log.Fatalf("failed to delete user by id: %v", deleteErr)
