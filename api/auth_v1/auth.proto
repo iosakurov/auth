@@ -56,14 +56,3 @@ enum  Role {
   ADMIN = 1;
   USER = 2;
 }
-
-message UserInfo {
-  int64 id = 1;
-  string name = 2;
-  string email = 3;
-  string password = 4;
-  string password_confirm = 5;
-  Role role = 6;
-  google.protobuf.Timestamp created_at = 7;
-  google.protobuf.Timestamp updated_at = 8;
-}
